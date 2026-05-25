@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Pro Money Converter | Ultimate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ============== 1. VARIABLES & THEME ============== */
+    :root {
+      /* Default (Dark Mode) Variables */
+      --bg-core: #030712;
+      --glass-panel: rgba(17, 24, 39, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(0, 0, 0, 0.3);
+      --input-focus-bg: rgba(0,0,0,0.5);
+      
+      --text-1: #f8fafc;
+      --text-2: #94a3b8;
+      --text-3: #475569;
+      
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --blob-opacity: 0.15;
+
+      /* Shared Constants */
+      --brand-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --brand-glow: rgba(59, 130, 246, 0.5);
+      --success: #10b981;
+      --radius: 20px;
+    }
+
+    /* Light Mode Overrides */
+    body.light-mode {
+      --bg-core: #f0f4f8; /* Soft cloud white */
+      --glass-panel: rgba(255, 255, 255, 0.75); /* White frosted glass */
+      --glass-border: rgba(255, 255, 255, 0.4); /* Subtle white border */
+      --input-bg: rgba(255, 255, 255, 0.5);
+      --input-focus-bg: rgba(255, 255, 255, 0.9);
+      
+      --text-1: #0f172a; /* Slate 900 */
+      --text-2: #64748b; /* Slate 500 */
+      --text-3: #cbd5e1; /* Slate 300 for placeholders */
+      
+      --shadow-color: rgba(59, 130, 246, 0.1); /* Blue-ish shadow for light mode */
+      --blob-opacity: 0.08; /* Subtle blobs */
+    }
+
+    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      margin: 0; padding: 0;
+      background-color: var(--bg-core);
+      /* Ambient Background Effect */
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, var(--blob-opacity)) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, var(--blob-opacity)) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ============== 2. MAIN LAYOUT ============== */
+    .app-wrapper {
+      flex: 1;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: clamp(16px, 3vh, 32px);
+      display: grid;
+      grid-template-columns: 380px 1fr; /* Fixed left sidebar, fluid right content */
+      gap: 24px;
+      height: 100%;
+      position: relative;
+    }
+
+    /* Theme Toggle Button (Floating) */
+    .theme-toggle {
+      position: absolute;
+      top: 24px; right: 24px;
+      z-index: 50;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--glass-panel);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      display: grid; place-items: center;
+      cursor: pointer;
+      color: var(--text-1);
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-toggle svg { width: 22px; height: 22px; transition: 0.3s; }
+    
+    /* Hide/Show icons based on mode */
+    body.light-mode .icon-moon { display: block; }
+    body.light-mode .icon-sun { display: none; }
+    body .icon-moon { display: none; }
+    body .icon-sun { display: block; }
+
+
+    /* ============== 3. PANELS (GLASS) ============== */
+    .glass-card {
+      background: var(--glass-panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 25px 50px -12px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .glass-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    }
+
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .card-label {
+      font-size: 12px; font-weight: 700; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: 1.2px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ============== 4. LEFT: INPUT ZONE ============== */
+    /* Hero Button */
+    .btn-hero {
+      width: 100%;
+      border: none;
+      background: var(--brand-gradient);
+      color: white;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* Shine effect on button */
+    .btn-hero::after {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: skewX(-20deg); transition: 0.5s;
+    }
+    .btn-hero:hover::after { left: 150%; }
+    .btn-hero:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 10px 15px -3px var(--brand-glow), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .btn-hero:active { transform: scale(0.98); }
+
+    /* Input Box */
+    .input-wrapper {
+      flex: 1;
+      background: var(--input-bg);
+      border-radius: 14px;
+      border: 1px solid transparent;
+      padding: 16px;
+      margin: 20px 0;
+      transition: all 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .input-wrapper:focus-within {
+      background: var(--input-focus-bg);
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+    
+    textarea {
+      width: 100%; flex: 1;
+      background: transparent; border: none;
+      color: var(--text-1);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px; line-height: 1.6;
+      resize: none;
+    }
+    textarea::placeholder { color: var(--text-3); }
+
+    /* Controls Row */
+    .controls-row {
+      background: rgba(125, 125, 125, 0.05);
+      padding: 6px; border-radius: 12px;
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--glass-border);
+    }
+    
+    /* Segment Control */
+    .segment {
+      flex: 1; display: flex; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 3px; position: relative;
+    }
+    .seg-opt {
+      flex: 1; text-align: center; cursor: pointer; z-index: 2;
+      padding: 8px 0; font-size: 13px; font-weight: 500; color: var(--text-2);
+      transition: 0.2s; border-radius: 6px;
+    }
+    .seg-opt:hover { color: var(--text-1); }
+    .seg-input { display: none; }
+    
+    /* Checked state logic */
+    .seg-input:checked + .seg-opt {
+      background: var(--text-1);
+      color: var(--bg-core); /* Invert text color on active tab */
+      font-weight: 700;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Toggle Switch */
+    .toggle-wrapper {
+      cursor: pointer; display: flex; align-items: center; padding: 0 8px;
+    }
+    .toggle-switch {
+      width: 40px; height: 22px; background: rgba(125,125,125,0.2);
+      border-radius: 20px; position: relative; transition: 0.3s;
+    }
+    .toggle-knob {
+      width: 18px; height: 18px; background: white; border-radius: 50%;
+      position: absolute; top: 2px; left: 2px; transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    #chkFormal:checked + .toggle-wrapper .toggle-switch { background: var(--success); }
+    #chkFormal:checked + .toggle-wrapper .toggle-switch .toggle-knob { transform: translateX(18px); }
+    #chkFormal { display: none; }
+
+    /* ============== 5. RIGHT: OUTPUT ZONE ============== */
+    .output-container {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative;
+    }
+    
+    .result-text {
+      font-size: clamp(24px, 4vw, 40px);
+      line-height: 1.4;
+      font-weight: 600;
+      color: var(--text-3); /* Placeholder color */
+      word-wrap: break-word;
+      transition: color 0.3s;
+    }
+    
+    .result-text.active {
+      background: linear-gradient(180deg, var(--text-1) 0%, var(--text-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      /* Glow effect only in dark mode to avoid muddy text in light mode */
+    }
+    body:not(.light-mode) .result-text.active {
+       filter: drop-shadow(0 0 30px rgba(255,255,255,0.15));
+    }
+    
+    .result-text.error {
+      background: none; -webkit-text-fill-color: initial;
+      color: #ef4444;
+    }
+
+    /* Action Footer */
+    .action-footer {
+      margin-top: auto; padding-top: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .status-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--success);
+      background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      opacity: 0; transition: 0.3s;
+    }
+    .status-badge.visible { opacity: 1; }
+
+    .btn-icon {
+      background: transparent; border: 1px solid var(--glass-border);
+      color: var(--text-2); padding: 8px 16px; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 500;
+      display: flex; align-items: center; gap: 6px; transition: 0.2s;
+    }
+    .btn-icon:hover { background: rgba(125,125,125,0.1); color: var(--text-1); border-color: var(--text-2); }
+
+    /* ============== 6. TOAST ============== */
+    .toast {
+      position: fixed; bottom: 40px; left: 50%; transform: translate(-50%, 20px);
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 12px 24px; border-radius: 12px;
+      font-weight: 600; font-size: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 100;
+    }
+    body.light-mode .toast {
+      background: #0f172a; color: #fff; /* Invert toast in light mode for contrast */
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* ============== RESPONSIVE ============== */
+    @media (max-width: 900px) {
+      .app-wrapper { grid-template-columns: 1fr; height: auto; display: block; overflow-y: auto; padding-top: 70px;}
+      .glass-card { margin-bottom: 20px; min-height: 300px; }
+      body { height: auto; overflow-y: auto; background-attachment: scroll;}
+      .theme-toggle { top: 16px; right: 16px; }
+    }
+  </style>
+</head>
+<body class="light-mode">
+
+  <!-- THEME TOGGLE BUTTON -->
+  <button class="theme-toggle" id="btnTheme" title="Chuyển chế độ Sáng/Tối">
+    <!-- Sun Icon (Show in Dark Mode) -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    <!-- Moon Icon (Show in Light Mode) -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+  </button>
+
+  <div class="app-wrapper">
+    
+    <!-- LEFT PANEL: INPUT -->
+    <div class="glass-card">
+      <div class="card-header">
+        <span class="card-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
+          Dữ liệu đầu vào
+        </span>
+        <button id="btnClear" class="btn-icon" style="padding: 4px 10px; font-size: 11px;">Clear</button>
+      </div>
+
+      <button id="btnHeroPaste" class="btn-hero">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+        Dán số từ Clipboard
+      </button>
+
+      <div class="input-wrapper">
+        <textarea id="inpMoney" placeholder="Hoặc nhập số tại đây..."></textarea>
+      </div>
+
+      <div class="controls-row">
+        <div class="segment">
+          <label class="seg-opt-wrap" style="flex:1">
+            <input type="radio" name="fmt" value="vn" checked class="seg-input">
+            <div class="seg-opt">VN (1.000,5)</div>
+          </label>
+          <label class="seg-opt-wrap" style="flex:1">
+            <input type="radio" name="fmt" value="us" class="seg-input">
+            <div class="seg-opt">QT (1,000.5)</div>
+          </label>
+        </div>
+        
+        <!-- Toggle -->
+        <input type="checkbox" id="chkFormal">
+        <label for="chkFormal" class="toggle-wrapper" title="Thêm từ 'chẵn' vào cuối">
+          <div style="font-size:12px; font-weight:600; color:var(--text-2); margin-right:8px">CHẴN</div>
+          <div class="toggle-switch"><div class="toggle-knob"></div></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: OUTPUT -->
+    <div class="glass-card">
+      <div class="card-header">
+        <span class="card-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Kết quả bằng chữ
+        </span>
+        <div id="statusBadge" class="status-badge">
+          <span style="width:6px; height:6px; background:currentColor; border-radius:50%"></span>
+          Auto-Copy
+        </div>
+      </div>
+
+      <div class="output-container">
+        <div id="outResult" class="result-text">
+          Chờ nhập liệu...
+        </div>
+      </div>
+
+      <div class="action-footer">
+        <button id="btnManualCopy" class="btn-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy Thủ Công
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modern Toast -->
+  <div id="toast" class="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">Đã copy thành công!</span>
+  </div>
+
+  <script>
+    // ================= LOGIC CORE (Standard) =================
+    const DIGITS = ["không","một","hai","ba","bốn","năm","sáu","bảy","tám","chín"];
+    const UNITS  = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"]; 
+
+    function read3(n, full){
+      let tr = Math.floor(n/100), ch = Math.floor((n%100)/10), dv = n%10, out = [];
+      if(tr > 0 || (full && (ch>0 || dv>0))) out.push(DIGITS[tr], "trăm");
+      if(ch > 1){ out.push(DIGITS[ch], "mươi"); if(dv===1) out.push("mốt"); else if(dv===5) out.push("lăm"); else if(dv>0) out.push(DIGITS[dv]); }
+      else if(ch === 1){ out.push("mười"); if(dv===1) out.push("một"); else if(dv===5) out.push("lăm"); else if(dv>0) out.push(DIGITS[dv]); }
+      else if(ch === 0 && dv > 0){ if(full || tr > 0) out.push("lẻ"); out.push(DIGITS[dv]); }
+      return out.join(" ");
+    }
+    
+    function convertMoney(raw, fmt, formal){
+      if(!raw) return null;
+      let sep = fmt==='vn'?',':'.'; 
+      let parts = raw.split(sep);
+      let dPart = parts.length > 1 ? parts.pop().replace(/\D/g,"") : "";
+      let iPart = parts.join("").replace(/\D/g,""); 
+      
+      if(!iPart && !dPart) return null;
+      if(iPart.length > 21) return "Số quá lớn để đọc chính xác!";
+
+      let iStr = iPart.replace(/^0+/, "") || "0";
+      let grps = [];
+      for(let i=iStr.length; i>0; i-=3) grps.push(parseInt(iStr.slice(Math.max(i-3,0), i)));
+      
+      let res = [];
+      for(let i=grps.length-1; i>=0; i--){
+         if(grps[i]===0) continue;
+         res.push(read3(grps[i], i<grps.length-1) + (UNITS[i] ? " " + UNITS[i] : ""));
+      }
+      let mainText = res.join(" ").trim() || "Không";
+      
+      let decText = "";
+      if(dPart && parseInt(dPart) !== 0){
+        let dVal = parseInt(dPart);
+        if(dPart.length <= 2){
+           if(dPart.length===2 && dVal<10 && dPart.startsWith("0")) decText = " phẩy không " + DIGITS[dVal];
+           else {
+             let ch = Math.floor(dVal/10), dv = dVal%10;
+             if(dVal<10) decText = " phẩy " + DIGITS[dVal];
+             else {
+               let tmp = [];
+               if(ch===1) tmp.push("mười"); else tmp.push(DIGITS[ch],"mươi");
+               if(dv===1 && ch>1) tmp.push("mốt"); else if(dv===5 && ch>0) tmp.push("lăm"); else if(dv>0) tmp.push(DIGITS[dv]);
+               decText = " phẩy " + tmp.join(" ");
+             }
+           }
+        } else {
+           decText = " phẩy " + dPart.split("").map(c=>DIGITS[parseInt(c)]).join(" ");
+        }
+      }
+
+// Xử lý thông minh nối chữ và dấu chấm câu
+      let final = mainText + decText + " đồng";
+      if(formal && (!dPart || parseInt(dPart)===0) && parseInt(iStr)>0) {
+        final += " chẵn"; // Tước luôn dấu chấm ở đây đi
+      }
+      
+      // Viết hoa chữ cái đầu và chốt sổ bằng MỘT dấu chấm gọn gàng ở cuối cùng
+      final = final.charAt(0).toUpperCase() + final.slice(1) + ".";
+      
+      return final;
+    }
+
+    // ================= INTERACTION =================
+    const inp = document.getElementById('inpMoney');
+    const out = document.getElementById('outResult');
+    const statusBadge = document.getElementById('statusBadge');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    const btnTheme = document.getElementById('btnTheme');
+    let toastTimer;
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    async function doAutoCopy(text) {
+      if(!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Đã tự động Copy!");
+        statusBadge.classList.add('visible');
+        setTimeout(() => statusBadge.classList.remove('visible'), 2000);
+      } catch (err) { /* Silent */ }
+    }
+
+    let debounceTimer;
+    function process() {
+      const fmt = document.querySelector('input[name="fmt"]:checked').value;
+      const formal = document.getElementById('chkFormal').checked;
+      const raw = inp.value;
+
+      const text = convertMoney(raw, fmt, formal);
+
+      if (text) {
+        out.textContent = text;
+        out.classList.add('active');
+        out.classList.remove('error');
+        
+        if(text.startsWith("Số quá")) {
+            out.classList.add('error');
+        } else {
+            doAutoCopy(text);
+        }
+      } else {
+        out.textContent = "Chờ nhập liệu...";
+        out.classList.remove('active', 'error');
+      }
+    }
+
+    // Event Bindings
+    inp.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(process, 300);
+    });
+    
+    document.querySelectorAll('input[name="fmt"], #chkFormal').forEach(el => {
+      el.addEventListener('change', process);
+    });
+
+    document.getElementById('btnClear').addEventListener('click', () => {
+      inp.value = ''; inp.focus(); process();
+    });
+
+    document.getElementById('btnHeroPaste').addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        inp.value = text;
+        inp.focus();
+        process();
+        showToast("Đã dán & Chuyển đổi!");
+      } catch (err) {
+        showToast("Lỗi: Không đọc được Clipboard!");
+      }
+    });
+
+    document.getElementById('btnManualCopy').addEventListener('click', () => {
+      if(out.classList.contains('active')) {
+        doAutoCopy(out.textContent);
+        showToast("Đã copy thủ công!");
+      }
+    });
+
+    // Theme Toggle Logic
+    btnTheme.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      // Optional: Save preference to localStorage if needed
+      // const isLight = document.body.classList.contains('light-mode');
+      // localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    window.onload = () => inp.focus();
+
+  </script>
+</body>
+</html>

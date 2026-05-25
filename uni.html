@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ Chuyển Đổi Font Chữ Unicode ↔ TCVN3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-tcvn3 {
+            font-family: ".VnTime", "Times New Roman", serif;
+        }
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #555; }
+        .dark textarea::-webkit-scrollbar-track { background: #1e293b; } /* slate-800 */
+        .dark textarea::-webkit-scrollbar-thumb { background: #475569; } /* slate-600 */
+        .dark textarea::-webkit-scrollbar-thumb:hover { background: #64748b; } /* slate-500 */
+        .action-btn {
+            @apply h-12 w-12 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900;
+        }
+        .gradient-text {
+            @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+
+    <div class="container mx-auto px-4 py-8 md:py-12 min-h-screen flex flex-col items-center">
+
+        <!-- Header -->
+        <header class="w-full max-w-5xl flex justify-between items-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                Công Cụ Chuyển Đổi <span class="gradient-text">Font Chữ</span>
+            </h1>
+            <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-lg text-sm p-2.5">
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
+        </header>
+        
+        <p class="mb-8 text-slate-600 dark:text-slate-400 text-center max-w-2xl">
+            Chuyển đổi hai chiều giữa Unicode và TCVN3(ABC). Nhấn nút ở giữa để đảo chiều.
+        </p>
+
+        <!-- Converter Body -->
+        <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-stretch gap-4 flex-grow">
+            <!-- Cột trái (Input) -->
+            <div class="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg transition-all duration-300 h-full">
+                <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <h2 id="left-title" class="font-semibold text-lg text-slate-700 dark:text-slate-200">Văn bản Unicode</h2>
+                    <button id="paste-button" class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 transition-all duration-200 text-sm font-medium flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a2 2 0 012-2h1.586A1 1 0 018.293 5.293l2.414 2.414A1 1 0 0111.414 8H12a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" />
+                        </svg>
+                        <span>Dán</span>
+                    </button>
+                </div>
+                <div class="p-2 flex-grow">
+                    <textarea id="left-area" class="w-full h-full min-h-[300px] md:min-h-[400px] p-3 text-base bg-transparent border-0 resize-none focus:ring-0 focus:outline-none" placeholder="Nhập văn bản Unicode..."></textarea>
+                </div>
+            </div>
+
+            <!-- Cột giữa (Actions) -->
+            <div class="flex flex-col items-center justify-center gap-4 py-4">
+                <button id="swap-button" title="Đảo chiều chuyển đổi" class="action-btn bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                </button>
+                 <button id="clear-button" title="Xóa nội dung" class="action-btn bg-rose-500 text-white hover:bg-rose-600 focus:ring-rose-400 hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            </div>
+
+            <!-- Cột phải (Output) -->
+            <div class="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg transition-all duration-300 h-full">
+                 <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <h2 id="right-title" class="font-semibold text-lg text-slate-700 dark:text-slate-200">Kết quả TCVN3 (ABC)</h2>
+                    <button id="copy-button" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition-all duration-200 text-sm font-medium flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
+                <div class="p-2 flex-grow">
+                    <textarea id="right-area" readonly class="w-full h-full min-h-[300px] md:min-h-[400px] p-3 text-base bg-slate-50 dark:bg-slate-700/50 border-0 resize-none focus:ring-0 focus:outline-none cursor-text font-tcvn3"></textarea>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM Elements ---
+    const leftArea = document.getElementById('left-area');
+    const rightArea = document.getElementById('right-area');
+    const leftTitle = document.getElementById('left-title');
+    const rightTitle = document.getElementById('right-title');
+    
+    const swapButton = document.getElementById('swap-button');
+    const clearButton = document.getElementById('clear-button');
+    const copyButton = document.getElementById('copy-button');
+    const pasteButton = document.getElementById('paste-button'); // New button
+
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    
+    // --- State ---
+    let isUniToTcvn = true;
+
+    // --- Character Maps ---
+    const uni_to_tcvn3_map = {'á':'¸','à':'µ','ả':'¶','ã':'·','ạ':'¹','Á':'¸','À':'µ','Ả':'¶','Ã':'·','Ạ':'¹','ă':'¨','ắ':'¾','ằ':'»','ẳ':'¼','ẵ':'½','ặ':'Æ','Ă':'¨','Ắ':'¾','Ằ':'»','Ẳ':'¼','Ẵ':'½','Ặ':'Æ','â':'©','ấ':'Ê','ầ':'Ç','ẩ':'È','ẫ':'É','ậ':'Ë','Â':'©','Ấ':'Ê','Ầ':'Ç','Ẩ':'È','Ẫ':'É','Ậ':'Ë','đ':'®','Đ':'§','é':'Ð','è':'Ì','ẻ':'Î','ẽ':'Ï','ẹ':'Ñ','É':'Ð','È':'Ì','Ẻ':'Î','Ẽ':'Ï','Ẹ':'Ñ','ê':'ª','ế':'Õ','ề':'Ò','ể':'Ó','ễ':'Ô','ệ':'Ö','Ê':'ª','Ế':'Õ','Ề':'Ò','Ể':'Ó','Ễ':'Ô','Ệ':'Ö','í':'Ý','ì':'×','ỉ':'Ø','ĩ':'Ü','ị':'Þ','Í':'Ý','Ì':'×','Ỉ':'Ø','Ĩ':'Ü','Ị':'Þ','ó':'ã','ò':'ß','ỏ':'á','õ':'â','ọ':'ä','Ó':'ã','Ò':'ß','Ỏ':'á','Õ':'â','Ọ':'ä','ô':'«','ố':'è','ồ':'å','ổ':'æ','ỗ':'ç','ộ':'é','Ô':'«','Ố':'è','Ồ':'å','Ổ':'æ','Ỗ':'ç','Ộ':'é','ơ':'¬','ớ':'í','ờ':'ê','ở':'ë','ỡ':'ì','ợ':'î','Ơ':'¬','Ớ':'í','Ờ':'ê','Ở':'ë','Ỡ':'ì','Ợ':'î','ú':'ó','ù':'ï','ủ':'ñ','ũ':'ò','ụ':'ô','Ú':'ó','Ù':'ï','Ủ':'ñ','Ũ':'ò','Ụ':'ô','ư':'­','ứ':'ø','ừ':'õ','ử':'ö','ữ':'÷','ự':'ù','Ư':'­','Ứ':'ø','Ừ':'õ','Ử':'ö','Ữ':'÷','Ự':'ù','ý':'ý','ỳ':'ú','ỷ':'û','ỹ':'ü','ỵ':'þ','Ý':'ý','Ỳ':'ú','Ỷ':'û','Ỹ':'ü','Ỵ':'þ',};
+    const tcvn3_to_uni_map = Object.fromEntries(Object.entries(uni_to_tcvn3_map).map(([k,v]) => [v,k.toLowerCase()]));
+
+    // --- Conversion Functions ---
+    const convert = (text, map) => text.split('').map(char => map[char] || char).join('');
+    function preprocessText(text) {
+    // Loại bỏ ", Việt Nam" hoặc ",ViệtNam" ở CUỐI chuỗi
+    return text.replace(/,\s*Việt\s*Nam\s*$/i, '');
+    
+    }
+    function performConversion() {
+        const sourceText = preprocessText(leftArea.value);
+        if (isUniToTcvn) {
+            rightArea.value = convert(sourceText, uni_to_tcvn3_map);
+        } else {
+            rightArea.value = convert(sourceText, tcvn3_to_uni_map);
+        }
+    }
+
+    // --- UI Update Function ---
+    function updateUI() {
+        if (isUniToTcvn) {
+            leftTitle.textContent = 'Văn bản Unicode';
+            rightTitle.textContent = 'Kết quả TCVN3 (ABC)';
+            leftArea.placeholder = 'Nhập văn bản Unicode...';
+            leftArea.classList.remove('font-tcvn3');
+            rightArea.classList.add('font-tcvn3');
+        } else {
+            leftTitle.textContent = 'Văn bản TCVN3 (ABC)';
+            rightTitle.textContent = 'Kết quả Unicode';
+            leftArea.placeholder = 'Nhập văn bản TCVN3...';
+            leftArea.classList.add('font-tcvn3');
+            rightArea.classList.remove('font-tcvn3');
+        }
+    }
+
+    // --- Event Listeners ---
+    leftArea.addEventListener('input', performConversion);
+
+    swapButton.addEventListener('click', () => {
+        isUniToTcvn = !isUniToTcvn;
+        const temp = leftArea.value;
+        leftArea.value = rightArea.value;
+        rightArea.value = temp;
+        updateUI();
+        performConversion();
+        leftArea.focus();
+    });
+
+    clearButton.addEventListener('click', () => {
+        leftArea.value = '';
+        rightArea.value = '';
+        leftArea.focus();
+    });
+
+    copyButton.addEventListener('click', () => {
+        if (!rightArea.value) return;
+        navigator.clipboard.writeText(rightArea.value).then(() => {
+            const originalButtonText = copyButton.innerHTML;
+            copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-300" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><span>Đã sao chép!</span>`;
+            copyButton.classList.replace('bg-emerald-600', 'bg-green-600');
+            copyButton.classList.replace('hover:bg-emerald-700', 'hover:bg-green-700');
+            setTimeout(() => {
+                copyButton.innerHTML = originalButtonText;
+                copyButton.classList.replace('bg-green-600', 'bg-emerald-600');
+                copyButton.classList.replace('hover:bg-green-700', 'hover:bg-emerald-700');
+            }, 2000);
+        });
+    });
+
+    // --- NEW: Paste Button Logic ---
+    pasteButton.addEventListener('click', () => {
+        navigator.clipboard.readText()
+            .then(text => {
+                if (text) {
+                    leftArea.value = text;
+                    performConversion(); // Automatically convert after pasting
+                    leftArea.focus();
+
+                    // Visual feedback for paste button
+                    const originalButtonText = pasteButton.innerHTML;
+                    pasteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-300" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><span>Đã dán!</span>`;
+                    pasteButton.classList.replace('bg-sky-600', 'bg-green-600');
+                    pasteButton.classList.replace('hover:bg-sky-700', 'hover:bg-green-700');
+                    setTimeout(() => {
+                        pasteButton.innerHTML = originalButtonText;
+                        pasteButton.classList.replace('bg-green-600', 'bg-sky-600');
+                        pasteButton.classList.replace('hover:bg-green-700', 'hover:bg-sky-700');
+                    }, 2000);
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi khi đọc clipboard: ', err);
+                // In a real app, you might want to show a user-friendly error message.
+            });
+    });
+
+    // --- Dark Mode Logic ---
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            themeToggleLightIcon.classList.remove('hidden');
+            themeToggleDarkIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeToggleLightIcon.classList.add('hidden');
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+    }
+
+    themeToggleButton.addEventListener('click', () => {
+        const isDarkNow = !document.documentElement.classList.contains('dark');
+        localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
+        applyTheme(isDarkNow);
+    });
+
+    // --- Initial Load ---
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDarkMode = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+    
+    applyTheme(isDarkMode);
+    updateUI();
+    leftArea.focus();
+});
+</script>
+
+</body>
+</html>

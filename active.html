@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn active Windows và Office</title>
+    <!-- Tích hợp Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tích hợp Font Google Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Tùy chỉnh font chữ mặc định */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hiệu ứng mượt mà */
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex flex-col">
+
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400 mb-2">
+                Hướng dẫn active Windows & Office
+            </h1>
+
+
+        </div>
+
+        <!-- Khu vực tải file -->
+        <div class="flex justify-center mb-12">
+            <a href="active.bat" 
+               download="active.bat"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Tải file active
+            </a>
+        </div>
+
+        <!-- Bảng tải về -->
+        <div class="mb-12">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg max-w-4xl mx-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Apps
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Online x64
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Online x32
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Offline x32-x64
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Office 365
+                                <p class="font-normal text-xs text-gray-500 dark:text-gray-400">Access, Excel, Lync, OneNote, Outlook, PowerPoint, Publisher, Word, OneDrive</p>
+                            </th>
+                            <td class="px-6 py-4">
+                                <a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=O365ProPlusRetail&platform=x64&language=en-us&version=O16GA" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank">Tải tại đây</a>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=O365ProPlusRetail&platform=x86&language=en-us&version=O16GA" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank">Tải tại đây</a>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="https://officecdn.microsoft.com/db/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/en-us/O365ProPlusRetail.img" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank">Tải tại đây</a>
+                            </td>
+                        </tr>
+                        <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                Project
+                            </th>
+                            <td class="px-6 py-4">
+                                <a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProjectProRetail&platform=x64&language=en-us&version=O16GA" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank">Tải tại đây</a>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProjectProRetail&platform=x86&language=en-us&version=O16GA" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" target="_blank">Tải tại đây</a>
+                            </td>
+                            <td class="px-6 py-4">
+                                <!-- Trống theo như bảng gốc -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Lưu ý mới được thêm vào -->
+            <p class="text-left text-sm text-gray-600 dark:text-gray-400 mt-4 max-w-4xl mx-auto">
+                <strong>Lưu ý:</strong> Để kiểm tra xem tải bản 64 hay 32, ấn tổ hợp phím <code class="bg-gray-200 dark:bg-gray-700 rounded px-1 py-0.5">Windows + R</code>, gõ <code class="bg-gray-200 dark:bg-gray-700 rounded px-1 py-0.5">dxdiag</code> và ấn Enter. Kiểm tra dòng <code class="bg-gray-200 dark:bg-gray-700 rounded px-1 py-0.5">Operating System</code>, ví dụ: "Windows 10 Pro 64-bit" thì tải bản 64, tương tự 32-bit thì tải bản 32.
+            </p>
+        </div>
+
+        <!-- Khu vực hướng dẫn -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Hướng dẫn Windows -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all">
+                <div class="p-8">
+                    <h2 class="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-4">Hướng dẫn active Windows</h2>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700 dark:text-gray-300">
+                        <li>Tải file <code class="bg-gray-200 dark:bg-gray-700 rounded px-1">active</code> về và mở ra.<br>
+                            Nếu hiện dòng chữ 
+                            <span class="italic">"The publisher could not be verified. Are you sure you want to run this software?"</span> 
+                            thì nhấn <span class="bg-gray-200 dark:bg-gray-700 rounded px-1">Run</span>.<br>
+                            Nếu hiện 
+                            <span class="italic">"Do you want to allow this app to make changes to your device?"</span> 
+                            thì chọn <span class="bg-gray-200 dark:bg-gray-700 rounded px-1">Yes</span>.
+                        </li>
+                        <li>Trong cửa sổ hiện ra, ấn phím <code class="bg-gray-200 dark:bg-gray-700 rounded px-1">1</code> để kích hoạt Windows.</li>
+                        <li>Khi thấy dòng thông báo <span class="text-green-500 font-semibold">màu xanh lá</span>, quá trình kích hoạt đã thành công. Ấn một phím bất kỳ để thoát.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Hướng dẫn Office -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all">
+                <div class="p-8">
+                    <h2 class="text-2xl font-bold text-teal-500 dark:text-teal-400 mb-4">Hướng dẫn active Office</h2>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700 dark:text-gray-300">
+                        <li>Cài đặt Office&Project sau đó tải file <code class="bg-gray-200 dark:bg-gray-700 rounded px-1">active</code> về và mở ra.<br>
+                            Nếu hiện dòng chữ 
+                            <span class="italic">"The publisher could not be verified. Are you sure you want to run this software?"</span> 
+                            thì nhấn <span class="bg-gray-200 dark:bg-gray-700 rounded px-1">Run</span>.<br>
+                            Nếu hiện 
+                            <span class="italic">"Do you want to allow this app to make changes to your device?"</span> 
+                            thì chọn <span class="bg-gray-200 dark:bg-gray-700 rounded px-1">Yes</span>.
+                        </li>
+                        <li>Trong cửa sổ hiện ra, ấn phím <code class="bg-gray-200 dark:bg-gray-700 rounded px-1">2</code> để kích hoạt Office.</li>
+                        <li>Tiếp tục ấn phím <code class="bg-gray-200 dark:bg-gray-700 rounded px-1">1</code> để xác nhận kích hoạt theo phương pháp Ohook.</li>
+                        <li>Khi thấy dòng thông báo <span class="text-green-500 font-semibold">màu xanh lá</span>, quá trình kích hoạt đã thành công. Ấn một phím bất kỳ để thoát.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+</body>
+</html>
+

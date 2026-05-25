@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Tool Nâng Cấp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+        }
+        .tool-container {
+            max-width: 700px; /* Increased width for better layout */
+            margin: 2rem auto; /* Centered with more margin */
+            padding: 2rem; /* More padding */
+            background-color: white;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.04); /* Softer shadow */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem; /* Standardized button padding */
+            border-radius: 8px; /* Standardized button radius */
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo primary */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Darker Indigo */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* Gray secondary */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Darker Gray */
+        }
+        .btn-success {
+            background-color: #10b981; /* Emerald success */
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #059669; /* Darker Emerald */
+        }
+        textarea, select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db; /* Gray border */
+            padding: 0.75rem;
+            width: 100%;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        textarea:focus, select:focus {
+            outline: none;
+            border-color: #4f46e5; /* Indigo focus */
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Indigo focus ring */
+        }
+        .char-count {
+            font-size: 0.8rem;
+            color: #6b7280; /* Gray text */
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+        /* Custom Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937; /* Dark gray */
+            margin-bottom: 1rem;
+        }
+        .modal-message {
+            font-size: 1rem;
+            color: #4b5563; /* Medium gray */
+            margin-bottom: 1.5rem;
+        }
+        .modal-close-btn {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .modal-close-btn:hover {
+            background-color: #4338ca;
+        }
+
+        /* Toggle Switch for Live Mode */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 50px; /* Smaller switch */
+          height: 28px; /* Smaller switch */
+        }
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: .4s;
+          border-radius: 28px; /* Fully rounded */
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 20px; /* Smaller knob */
+          width: 20px;  /* Smaller knob */
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+        }
+        input:checked + .slider {
+          background-color: #4f46e5; /* Indigo when on */
+        }
+        input:checked + .slider:before {
+          transform: translateX(22px); /* Adjusted for smaller size */
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <div class="tool-container">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-600">🌀 Base64 Master Tool</h1>
+            <p class="text-slate-600 mt-2">Công cụ mã hóa và giải mã Base64 siêu tốc, siêu tiện lợi!</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label for="base64-input" class="block text-sm font-medium text-slate-700 mb-1">Chuỗi đầu vào:</label>
+                <textarea id="base64-input" rows="6" placeholder="Nhập chuỗi của cậu vào đây..." class="shadow-sm"></textarea>
+                <div id="input-char-count" class="char-count">0 ký tự</div>
+            </div>
+            <div>
+                <label for="base64-result" class="block text-sm font-medium text-slate-700 mb-1">Kết quả:</label>
+                <textarea id="base64-result" rows="6" placeholder="Kết quả sẽ hiện ở đây nè..." readonly class="bg-slate-50 shadow-sm"></textarea>
+                <div id="output-char-count" class="char-count">0 ký tự</div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <div class="flex items-center gap-3">
+                <label for="base64-mode" class="text-sm font-medium text-slate-700">Chế độ:</label>
+                <select id="base64-mode" class="shadow-sm w-auto">
+                    <option value="encode">🔐 Mã hóa (Encode)</option>
+                    <option value="decode">🔓 Giải mã (Decode)</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-slate-700">Live Mode:</span>
+                <label class="switch">
+                    <input type="checkbox" id="live-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3">
+            <button id="base64-run" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="m9 18 6-6-6-6"/></svg>
+                Thực hiện
+            </button>
+            <button id="copy-button" class="btn btn-success" style="display:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Sao chép kết quả
+            </button>
+            <button id="clear-button" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                Xóa hết
+            </button>
+        </div>
+    </div>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title" class="modal-title">Thông báo</h3>
+            <p id="modal-message" class="modal-message">Nội dung thông báo ở đây.</p>
+            <button id="modal-close-btn" class="btn modal-close-btn">Đã hiểu</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const inputEl = document.getElementById('base64-input');
+        const resultEl = document.getElementById('base64-result');
+        const modeSelect = document.getElementById('base64-mode');
+        const runBtn = document.getElementById('base64-run');
+        const copyBtn = document.getElementById('copy-button');
+        const clearBtn = document.getElementById('clear-button');
+        const inputCharCountEl = document.getElementById('input-char-count');
+        const outputCharCountEl = document.getElementById('output-char-count');
+        const liveModeToggle = document.getElementById('live-mode-toggle');
+
+        // Modal Elements
+        const modalOverlay = document.getElementById('custom-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        // --- Utility Functions ---
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalOverlay.classList.add('active');
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // --- Core Logic ---
+        function processBase64() {
+            const mode = modeSelect.value;
+            const input = inputEl.value;
+
+            if (!input.trim() && mode === 'decode') { // Allow empty for encode if desired, but decode needs input
+                resultEl.value = "";
+                outputCharCountEl.textContent = "0 ký tự";
+                copyBtn.style.display = "none";
+                if (!liveModeToggle.checked) { // Only show modal if not in live mode to avoid spam
+                    showModal("🤔 Ủa nè?", "Cậu ơi, chưa nhập gì sao giải mã được nè!");
+                }
+                return;
+            }
+
+
+            let output = "";
+            try {
+                if (mode === "encode") {
+                    // UTF-8 handling: encodeURIComponent then unescape for btoa
+                    output = btoa(unescape(encodeURIComponent(input)));
+                } else {
+                    // UTF-8 handling: atob then escape then decodeURIComponent
+                    output = decodeURIComponent(escape(atob(input)));
+                }
+                resultEl.value = output;
+                outputCharCountEl.textContent = `${output.length} ký tự`;
+                copyBtn.style.display = output ? "inline-flex" : "none"; // Show copy if there's result
+            } catch (err) {
+                console.error("Base64 Error:", err);
+                resultEl.value = "";
+                outputCharCountEl.textContent = "0 ký tự";
+                copyBtn.style.display = "none";
+                if (!liveModeToggle.checked || input.trim()) { // Show error if not live mode or if there was input
+                    showModal("Ối!", "Có lỗi rồi cậu ơi! Chuỗi Base64 không hợp lệ hoặc có vấn đề gì đó á.");
+                }
+            }
+        }
+
+        // --- Event Listeners ---
+        runBtn.addEventListener('click', processBase64);
+
+        copyBtn.addEventListener('click', () => {
+            if (!resultEl.value) return;
+
+            // Using a temporary textarea for document.execCommand
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = resultEl.value;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    copyBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Đã chép!
+                    `;
+                    setTimeout(() => {
+                        copyBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            Sao chép kết quả
+                        `;
+                    }, 2000);
+                } else {
+                    showModal("Lỗi copy", "Không thể sao chép tự động. Cậu thử copy thủ công xem sao.");
+                }
+            } catch (err) {
+                console.error('Copy failed:', err);
+                showModal("Lỗi copy", "Không thể sao chép tự động. Cậu thử copy thủ công xem sao.");
+            }
+            document.body.removeChild(tempTextArea);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            inputEl.value = "";
+            resultEl.value = "";
+            inputCharCountEl.textContent = "0 ký tự";
+            outputCharCountEl.textContent = "0 ký tự";
+            copyBtn.style.display = "none";
+            inputEl.focus();
+        });
+
+        inputEl.addEventListener('input', () => {
+            const count = inputEl.value.length;
+            inputCharCountEl.textContent = `${count} ký tự`;
+            if (liveModeToggle.checked) {
+                processBase64();
+            }
+        });
+
+        // Initial char count for input (in case of page refresh with content)
+        inputCharCountEl.textContent = `${inputEl.value.length} ký tự`;
+        outputCharCountEl.textContent = `${resultEl.value.length} ký tự`;
+
+        // Toggle run button based on live mode
+        liveModeToggle.addEventListener('change', () => {
+            if (liveModeToggle.checked) {
+                runBtn.style.display = 'none'; // Hide run button in live mode
+                processBase64(); // Process immediately when toggled on
+            } else {
+                runBtn.style.display = 'inline-flex'; // Show run button
+            }
+        });
+
+        // Initial state for run button
+        if (liveModeToggle.checked) {
+            runBtn.style.display = 'none';
+        }
+
+        // Handle mode change in live mode
+        modeSelect.addEventListener('change', () => {
+            if (liveModeToggle.checked) {
+                processBase64();
+            }
+        });
+
+    </script>
+</body>
+</html>
