@@ -1,2 +1,2 @@
 # Một số tool nho nhỏ của zwong...
-https://loveyouhihi1234.github.io/github.io/
+https://loveyouhihi1234.github.io/tool
